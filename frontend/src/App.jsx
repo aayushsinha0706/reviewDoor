@@ -1,83 +1,40 @@
 import { useState } from 'react'
 
+import Companyform from './components/Companyform'
+import Companies from './components/Companies'
 const App = () => {
 
   const [companies, setCompanies] = useState([])
+  const [selectCity, setSelectCity] = useState('')
+  const [search, setSearch] = useState('')
 
-  const [company, setCompany] = useState('')
-  const [location, setLocation] = useState('')
-  const [date, setDate] = useState('')
-  const [city, setCity] = useState('')
-
-  const addCompany = (event) => {
-    event.preventDefault()
-    setCompanies(companies.concat({
-      company,
-      location,
-      date,
-      city
-    }))
-    setCompany('')
-    setLocation('')
-    setDate('')
-    setCity('')
+  const addCompany = ({
+    company, location, date, city
+  }) => {
+    setCompanies(
+      companies.concat({
+        company,
+        location,
+        date,
+        city
+      })
+    )
   }
 
   return(
     <div>
-      <form onSubmit={addCompany}>
-        <div>
-          Company Name:
-          <input 
-            name = "company"
-            type = "text"
-            placeholder= "company name"
-            value={company}
-            onChange={({target}) => setCompany(target.value)}
-          />
-        </div>
-
-        <div>
-          Location:
-          <input 
-            name = "company"
-            type = "text"
-            placeholder= "company name"
-            value={location}
-            onChange={({target}) => setLocation(target.value)}
-          />
-        </div>
-
-        <div>
-          Founded On:
-          <input 
-            name = "company"
-            type = "text"
-            placeholder= "company name"
-            value={date}
-            onChange={({target}) => setDate(target.value)}
-          />
-        </div>
-
-        <div>
-          City:
-          <input 
-            name = "company"
-            type = "text"
-            placeholder= "company name"
-            value={city}
-            onChange={({target}) => setCity(target.value)}
-          />
-        </div>
-        <button type="submit">Add Company</button>
-      </form>
       <div>
-        {companies.map((company) => (
-          <div key = {company.company}>
-            {company.company}{' '}{company.location}{' '}{company.date}{' '}{company.city}
-          </div>
-        ))}
+        <span>
+          <Companyform addCompany={addCompany} />
+        </span>
+        <span>
+          <input onChange={({target}) => setSelectCity(target.value)} placeholder='Find Company in city...' />
+        </span>
+        <span>
+          <input onChange={({target}) => setSearch(target.value)} placeholder='Search Company' />
+        </span>
       </div>
+      <Companies companies = {companies} selectCity={selectCity} search={search} />
     </div>
   )
 
