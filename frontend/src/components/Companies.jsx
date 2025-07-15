@@ -11,7 +11,7 @@ const Companies = ({
                 )).filter((company) => (
                     company.city.toLowerCase().includes(selectCity.toLowerCase())
                 )).map((company) => (
-                <div key={company.name}>
+                <div key={company.id}>
                     {company.company}{' '}{company.location}{' '}{company.date}{' '}{company.city}
                 </div>
                 ))
