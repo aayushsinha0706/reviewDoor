@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+require('dotenv').config()
 
-let companies = require('./sampledata')
+const Company = require('./models/company')
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -12,10 +13,28 @@ const requestLogger = (request, response, next) => {
   next()
 } 
 
+const errorHandler = (error, request, response, next) => {
+
+  console.error(error.message)
+  
+  if(error.name === 'CastError') {
+    return response.status(400).json({ error: 'Invalid id' })
+  }
+  else if (error.name === 'ValidationError'){
+    return response.status(400).json({ error: error.message })
+  }
+  next(error)
+}
+
+const unknownEndpoint = (request,response,next) => {
+  response.status(404).json({ error: 'Unknown endpoint' })
+}
+
+app.use(express.static('dist'))
 app.use(express.json())
 app.use(requestLogger)
 app.use(cors())
-app.use(express.static('dist'))
+
 
 app.get('/',(request, response) => {
     response.send(
@@ -24,24 +43,25 @@ app.get('/',(request, response) => {
 })
 
 app.get('/api/companies', (request, response) => {
-    response.json(companies)
+    Company.find({}).then(companies => {
+        response.json(companies)
+    })
 })
 
-app.get('/api/companies/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const company = companies.find(c => c.id === id)
-    if (!company) {
-        return response.status(404).json({ error: 'Company not found' })
-    }
-    response.json(company)
+app.get('/api/companies/:id', (request, response, next) => {
+    const id = request.params.id
+    Company
+        .findById(id)
+        .then(company => {
+            if (company) {
+                response.json(company)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 })
 
-const generateID = () => {
-    const maxId = companies.length > 0
-    ? Math.max(...companies.map(c => c.id))
-    : 0
-    return (maxId + 1)
-}
 app.post('/api/companies', (request, response) => {
     const body = request.body
 
@@ -49,17 +69,17 @@ app.post('/api/companies', (request, response) => {
         return response.status(400).json({error: 'Company name is required'})
     }
 
-    const company = {
-        id: generateID(),
-        ...body
-    }
-
-    companies = companies.concat(company)
-    response.json(company)
+    const company = new Company(body)
+    company
+        .save()
+        .then(savedCompany => response.json(savedCompany))
+        .catch(error => next(error))
 })
 
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
