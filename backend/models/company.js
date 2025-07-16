@@ -1,22 +1,14 @@
 const mongoose = require('mongoose')
-require('dotenv').config()
-
-const url = process.env.MONGODB_URI
-
-mongoose.set('strictQuery',false)
-mongoose.connect(url)
-    .then(result => {
-        console.log('connected to MongoDB')
-    })
-    .catch(error => {
-        console.error('Failed to connect to MongoDB', error.message)
-    })
 
 const companySchema = new mongoose.Schema({
     company: {type: String, required: true},
     location: String,
     date: Date,
-    city: String
+    city: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 })
 
 companySchema.set('toJSON', {
