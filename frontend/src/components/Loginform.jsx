@@ -20,6 +20,7 @@ const Loginform = ({
                     name="username" 
                     value={username} 
                     onChange={({target}) => setUsername(target.value)}
+                    placeholder='username'
                     required 
                 />
             </div>
@@ -29,6 +30,7 @@ const Loginform = ({
                     name="password"
                     value={password}
                     onChange={({target}) => setPassword(target.value)} 
+                    placeholder='password'
                     required
                 />
             </div>
