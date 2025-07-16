@@ -70,6 +70,8 @@ A full-stack web application for managing company listings and reviews. Users ca
 
 ## Data Models
 
+![data modeling diagram](https://github.com/aayushsinha0706/reviewDoor/blob/main/date%20model.png)
+
 ### User
 ```javascript
 {
