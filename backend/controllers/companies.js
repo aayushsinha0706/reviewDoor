@@ -5,7 +5,16 @@ const jwt = require('jsonwebtoken')
 
 companyRouter.get('/', async (request, response) => {
     try {
-        const companies = await Company.find({}).populate('user',{username: 1, name: 1})
+        const companies = await Company
+            .find({})
+            .populate('user',{username: 1, name: 1})
+            .populate('reviews', {
+                name: 1, 
+                review: 1, 
+                rating: 1, 
+                createdAt: 1,
+                user: 1
+            })
         response.json(companies)
     } catch (error) {
         response.status(500).json({ error: 'Internal server error' })
@@ -15,7 +24,16 @@ companyRouter.get('/', async (request, response) => {
 companyRouter.get('/:id', async (request, response, next) => {
     try {
         const id = request.params.id
-        const company = await Company.findById(id)
+        const company = await Company
+            .findById(id)
+            .populate('user',{username: 1, name: 1})
+            .populate('reviews', {
+                name: 1, 
+                review: 1, 
+                rating: 1, 
+                createdAt: 1,
+                user: 1
+            })
         
         if (company) {
             response.json(company)
@@ -39,8 +57,6 @@ const getToken = (request) => {
 companyRouter.post('/', async (request, response, next) => {
     try {
         const body = request.body
-        
-
         const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
         if (!decodedToken.id){
@@ -55,14 +71,19 @@ companyRouter.post('/', async (request, response, next) => {
 
         const company = new Company({
             ...body,
-            user: user.id
+            user: user.id,
+            reviews: []
         })
         const savedCompany = await company.save()
 
         user.companies = user.companies.concat(savedCompany._id)
         await user.save()
 
-        response.json(savedCompany)
+        const populatedCompany = await Company
+            .findById(savedCompany._id)
+            .populate('user', { username: 1, name: 1 })
+    
+        response.json(populatedCompany)
     } catch (error) {
         next(error)
     }

@@ -43,6 +43,7 @@ const Companyform = ({addCompany}) => {
               placeholder="company name"
               value={company}
               onChange={({target}) => setCompany(target.value)}
+              required
             />
           </div>
 
@@ -54,6 +55,7 @@ const Companyform = ({addCompany}) => {
               placeholder="location"
               value={location}
               onChange={({target}) => setLocation(target.value)}
+              required
             />
           </div>
 
@@ -65,6 +67,7 @@ const Companyform = ({addCompany}) => {
               placeholder="founded date"
               value={date}
               onChange={({target}) => setDate(target.value)}
+              required
             />
           </div>
 
@@ -76,6 +79,7 @@ const Companyform = ({addCompany}) => {
               placeholder="city"
               value={city}
               onChange={({target}) => setCity(target.value)}
+              required
             />
           </div>
           <button type="submit">Save</button>

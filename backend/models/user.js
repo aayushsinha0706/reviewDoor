@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema({
     companies: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company'
+    }],
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+         ref: 'Review'
     }]
 })
 

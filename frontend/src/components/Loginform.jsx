@@ -19,7 +19,8 @@ const Loginform = ({
                     type="text" 
                     name="username" 
                     value={username} 
-                    onChange={({target}) => setUsername(target.value)} 
+                    onChange={({target}) => setUsername(target.value)}
+                    required 
                 />
             </div>
             <div>
@@ -28,6 +29,7 @@ const Loginform = ({
                     name="password"
                     value={password}
                     onChange={({target}) => setPassword(target.value)} 
+                    required
                 />
             </div>
             <button type="submit">login</button>
